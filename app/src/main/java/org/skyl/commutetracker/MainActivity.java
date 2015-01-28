@@ -1,12 +1,17 @@
 package org.skyl.commutetracker;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Chronometer;
+
+import org.skyl.commutetracker.models.Commute;
+import org.skyl.commutetracker.services.LocationService;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -15,7 +20,9 @@ public class MainActivity extends ActionBarActivity {
 
     private Chronometer chronometer;
 
-    //private long base;
+    private Commute commute;
+
+    LocationService locationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +69,27 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void startCommute() {
-        //System.out.println("startCommute!");
+
+        this.commute = new Commute();
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
+        commute.start();
+
+        Context context = this.getApplicationContext();
+        Intent intent = new Intent(context, LocationService.class);
+
+        intent.putExtra("commuteID", commute.getId());
+        context.startService(intent);
+
     }
 
     public void stopCommute() {
-        //System.out.println("stopCommute!");
         chronometer.stop();
+        this.commute.stop();
+
+        Context context = this.getApplicationContext();
+        Intent intent = new Intent(context, LocationService.class);
+        context.stopService(intent);
+
     }
 }
