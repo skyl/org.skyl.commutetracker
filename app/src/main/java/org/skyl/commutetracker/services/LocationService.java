@@ -1,27 +1,33 @@
 package org.skyl.commutetracker.services;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
 
 import org.skyl.commutetracker.models.Commute;
 import org.skyl.commutetracker.models.CommuteLocation;
 
 
-public class LocationService extends IntentService {
+public class LocationService extends Service {
+
+    public LocationService() {}
 
     Commute commute;
 
-    public LocationService() {
-        super("LocationService");
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        // throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         System.out.println("onHandleIntent!");
         System.out.println(intent);
         Long id = (Long) intent.getExtras().get("commuteID");
@@ -33,9 +39,12 @@ public class LocationService extends IntentService {
         // Acquire a reference to the system Location Manager
         LocationManager locationManager = (LocationManager) this.getSystemService(
                 Context.LOCATION_SERVICE);
+        System.out.println(locationManager);
         // Define a listener that responds to location updates
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
+                System.out.println("onLocationChanged!");
+                System.out.println(location);
                 // Called when a new location is found by the network location provider.
                 writeLocation(location);
             }
@@ -49,6 +58,7 @@ public class LocationService extends IntentService {
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, 10000, 10, locationListener);
 
+        return START_STICKY;
     }
 
     public void writeLocation(Location location) {

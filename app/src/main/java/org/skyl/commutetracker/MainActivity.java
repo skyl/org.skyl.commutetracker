@@ -22,8 +22,6 @@ public class MainActivity extends ActionBarActivity {
 
     private Commute commute;
 
-    LocationService locationService;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
