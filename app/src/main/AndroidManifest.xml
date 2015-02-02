@@ -40,6 +40,23 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".HistoryActivity"
+            android:label="@string/title_activity_history"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.skyl.commutetracker.MainActivity" />
+        </activity>
+        <activity
+            android:name=".CommuteDetailActivity"
+            android:label="@string/title_activity_commute_detail"
+            android:parentActivityName=".HistoryActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.skyl.commutetracker.HistoryActivity" />
+        </activity>
     </application>
 
 </manifest>

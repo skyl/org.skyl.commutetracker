@@ -10,8 +10,8 @@ public class Commute extends SugarRecord<Commute> {
 
     // new Date() is good enough?
     // http://stackoverflow.com/q/5369682
-    Date beg;
-    Date end;
+    public Date beg;
+    public Date end;
 
     public Commute() {}
 
