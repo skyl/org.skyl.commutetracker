@@ -1,102 +1,68 @@
 package org.skyl.commutetracker;
 
-import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.widget.ListView;
 
+import org.skyl.commutetracker.adapters.RowAdapter;
 import org.skyl.commutetracker.models.Commute;
-import org.skyl.commutetracker.models.CommuteLocation;
 
 import java.util.Collections;
 import java.util.List;
 
 
-// TODO ActionBarActivity too?
-public class HistoryActivity extends ListActivity implements AdapterView.OnItemClickListener {
-
-    List<Commute> commutes;
+public class HistoryActivity extends ActionBarActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_history);
 
-        // TODO: pagination?
-        commutes = Commute.listAll(Commute.class);
-        // TODO: get reversed list from Sugar?
-        Collections.reverse(commutes);
-
-        RowAdapter adapter = new RowAdapter();
-        setListAdapter(adapter);
-
-        this.getListView().setOnItemClickListener(this);
-    }
-
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        System.out.println("OK!" + id + position);
-        System.out.println(commutes.get(position).getId());
-        Commute commute = commutes.get(position);
-
-        /*
-        List<CommuteLocation> locations = CommuteLocation.find(CommuteLocation.class,
-                "commute = ?", commute.getId().toString());
-        System.out.println(locations);
-        */
-
-        // Then you start a new Activity via Intent
-        /*
-        Intent intent = new Intent();
-        intent.setClass(this, ListItemDetail.class);
-        intent.putExtra("position", position);
-        // Or / And
-        intent.putExtra("id", id);
-        startActivity(intent);
-        */
-        Intent intent = new Intent(this, CommuteDetailActivity.class);
-        intent.putExtra("commuteID", commute.getId());
-        startActivity(intent);
-    }
-
-
-    private class RowAdapter extends ArrayAdapter<Commute> {
-
-        public RowAdapter() {
-            super(HistoryActivity.this, R.layout.history_row, commutes);
-        }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-
-            if (convertView == null) {
-                System.out.println("convertView is null!");
-                LayoutInflater inflater = (LayoutInflater) this.getContext()
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = (View) inflater.inflate(
-                        R.layout.history_row, null);
+        if (findViewById(R.id.fragment_container) != null) {
+            // If we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
             }
 
+            HistoryListFragment fragment = new HistoryListFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, fragment).commit();
+        }
 
-            // TODO: add first/last locations?
-            TextView beg = (TextView) convertView.findViewById(R.id.commuteBeg);
-            TextView end = (TextView) convertView.findViewById(R.id.commuteEnd);
+    }
 
-            // TODO: format dates
-            beg.setText(commutes.get(position).beg.toString());
-            end.setText(commutes.get(position).end.toString());
-            //end.setText(commutes);
+    public static class HistoryListFragment extends ListFragment {
 
-            return convertView;
+        List<Commute> commutes;
+        RowAdapter adapter;
+
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // TODO: pagination?
+            commutes = Commute.listAll(Commute.class);
+            // TODO: get reversed list from Sugar?
+            Collections.reverse(commutes);
+
+            adapter = new RowAdapter(this.getActivity(), R.layout.history_row, commutes);
+            setListAdapter(adapter);
+
+        }
+
+        public void onListItemClick(ListView listView, View view, int position, long id) {
+            Commute commute = commutes.get(position);
+            Intent intent = new Intent(this.getActivity(), CommuteDetailActivity.class);
+            intent.putExtra("commuteID", commute.getId());
+            startActivity(intent);
         }
     }
+
 }
 
