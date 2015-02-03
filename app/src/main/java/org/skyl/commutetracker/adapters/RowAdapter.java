@@ -10,6 +10,9 @@ import android.widget.TextView;
 import org.skyl.commutetracker.R;
 import org.skyl.commutetracker.models.Commute;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 
@@ -37,9 +40,12 @@ public class RowAdapter extends ArrayAdapter<Commute> {
         TextView beg = (TextView) convertView.findViewById(R.id.commuteBeg);
         TextView end = (TextView) convertView.findViewById(R.id.commuteEnd);
 
-        // TODO: format dates
-        beg.setText(commutes.get(position).beg.toString());
-        end.setText(commutes.get(position).end.toString());
+        SimpleDateFormat begFormat = new SimpleDateFormat("EEE MMM d h:mm a");
+        SimpleDateFormat endFormat = new SimpleDateFormat("h:mm a");
+        Commute commute = commutes.get(position);
+
+        beg.setText(begFormat.format(commute.beg));
+        end.setText(endFormat.format(commute.end));
 
         return convertView;
     }
