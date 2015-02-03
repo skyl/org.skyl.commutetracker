@@ -17,10 +17,14 @@ public class CommuteLocation extends SugarRecord<CommuteLocation> {
 
     public CommuteLocation() {}
 
-    public CommuteLocation(Commute commute, Location location){
+    public CommuteLocation(Commute commute, Location location) {
         this.commute = commute;
         this.lat = location.getLatitude();
         this.lon = location.getLongitude();
         this.date = new Date();
+    }
+
+    public String showLatLon() {
+        return String.format("%s %s", this.lat, this.lon);
     }
 }

@@ -3,6 +3,9 @@
     package="org.skyl.commutetracker" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- reverse geo coding, for starters -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:name="com.orm.SugarApp"

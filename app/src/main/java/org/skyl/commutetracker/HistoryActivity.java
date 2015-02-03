@@ -56,6 +56,9 @@ public class HistoryActivity extends ActionBarActivity {
 
         }
 
+
+        // TODO: implement long-click delete
+
         public void onListItemClick(ListView listView, View view, int position, long id) {
             Commute commute = commutes.get(position);
             Intent intent = new Intent(this.getActivity(), CommuteDetailActivity.class);
