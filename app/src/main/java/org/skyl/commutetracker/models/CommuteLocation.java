@@ -11,8 +11,8 @@ public class CommuteLocation extends SugarRecord<CommuteLocation> {
 
     Commute commute;
 
-    double lat;
-    double lon;
+    public double lat;
+    public double lon;
     Date date;
 
     public CommuteLocation() {}

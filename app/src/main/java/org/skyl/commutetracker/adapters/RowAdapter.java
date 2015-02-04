@@ -1,6 +1,8 @@
 package org.skyl.commutetracker.adapters;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +16,10 @@ import org.skyl.commutetracker.R;
 import org.skyl.commutetracker.models.Commute;
 import org.skyl.commutetracker.models.CommuteLocation;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 
 public class RowAdapter extends ArrayAdapter<Commute> {
@@ -54,11 +58,35 @@ public class RowAdapter extends ArrayAdapter<Commute> {
         if (locations.size() > 0) {
             CommuteLocation startLocation = locations.get(0);
             CommuteLocation endLocation = locations.get(locations.size() - 1);
-            // TODO: reverse geo coding - show name of location rather than lat/lon
 
+            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
-            locationStart.setText(startLocation.showLatLon());
-            locationEnd.setText(endLocation.showLatLon());
+            // error could be 0 results, IOException, etc ...
+            // we will put them in the list if we get something though
+            // TODO: call on a different thread (use LocationAddress class)
+
+            try {
+                Address startAddress = geocoder.getFromLocation(
+                        startLocation.lat, startLocation.lon, 1).get(0);
+                for (int i = 0; i <= startAddress.getMaxAddressLineIndex(); i++) {
+                    System.out.println(startAddress.getAddressLine(i));
+                }
+
+                locationStart.setText(startAddress.getAddressLine(0));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Address endAddress = geocoder.getFromLocation(
+                        endLocation.lat, endLocation.lon, 1).get(0);
+                for (int i = 0; i <= endAddress.getMaxAddressLineIndex(); i++) {
+                    System.out.println(endAddress.getAddressLine(i));
+                }
+                locationEnd.setText(endAddress.getAddressLine(0));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         SimpleDateFormat begFormat = new SimpleDateFormat("EEE MMM d h:mm a");
